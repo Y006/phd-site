@@ -23,7 +23,7 @@ import markdown
 
 # 配置
 SRC_DIR = Path("src")
-DOC_DIR = Path("doc")
+DOC_DIR = Path("docs")
 ASSETS_DIR = Path("assets")
 MD_STYLE_CSS = ASSETS_DIR / "md_style.css"
 INDEX_CSS = ASSETS_DIR / "index.css"
@@ -31,7 +31,7 @@ PASSWORDS_FILE = Path("passwords.json")
 
 # 重要文件说明：
 # - .staticrypt.json: staticrypt 的盐值文件，不能删除！删除会导致密码记忆失效
-# - doc/.build_cache: 增量构建缓存，删除后会全量重建（可选保留）
+# - docs/.build_cache: 增量构建缓存，删除后会全量重建（可选保留）
 
 
 def generate_password(length: int = 16) -> str:

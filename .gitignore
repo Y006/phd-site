@@ -33,4 +33,4 @@ src/public/*
 # --- 4. 构建产物 ---
 # 推荐上传 docs，这样别人可以直接看你的 Demo 效果
 # docs/
-doc/.build_cache
+docs/.build_cache
