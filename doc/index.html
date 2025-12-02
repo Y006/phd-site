@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhD Site - 文档目录</title>
+    <style>
+/* ...保留你之前的 .file-list, .file-name 等样式... */
+
+/* 默认卡片样式 (加密状态) */
+.file-list li a {
+    /* ...保留之前的 flex, padding 等属性... */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: #24292e;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    
+    /* 默认蓝色竖线 (加密) */
+    border-left: 4px solid #0366d6; 
+}
+
+/* --- 新增：公开文件的特殊样式 --- */
+.file-list li a.is-public {
+    border-left-color: #28a745; /* 绿色竖线 */
+}
+
+/* 悬停效果 */
+.file-list li a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background-color: #f6f8fa;
+}
+
+/* --- 图标样式 --- */
+.file-status {
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 加密图标 */
+.status-lock {
+    color: #6a737d;
+    background: #f1f3f5;
+}
+
+/* 公开图标 */
+.status-public {
+    color: #155724;
+    background: #d4edda; /* 浅绿色背景 */
+}
+
+/* 额外样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: white;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+}
+
+header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.file-section {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+.file-section h2 {
+    color: #24292e;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e1e4e8;
+}
+
+.file-list {
+    list-style: none;
+}
+
+.file-list li {
+    margin-bottom: 0.75rem;
+}
+
+.file-name {
+    flex-grow: 1;
+}
+
+footer {
+    text-align: center;
+    color: rgba(255,255,255,0.8);
+    margin-top: 2rem;
+    font-size: 0.9rem;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 PhD Site</h1>
+            <p>个人文档管理系统</p>
+        </header>
+        
+        
+        <section class="file-section">
+            <h2>📚 加密文档</h2>
+            <ul class="file-list">
+                
+                <li>
+                    <a href="测试.html" class="">
+                        <span class="file-name">测试</span>
+                        <span class="file-status status-lock">🔒 加密</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="个人日记.html" class="">
+                        <span class="file-name">个人日记（示例）</span>
+                        <span class="file-status status-lock">🔒 加密</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="新视角合成.html" class="">
+                        <span class="file-name">新视角合成</span>
+                        <span class="file-status status-lock">🔒 加密</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="具身智能报告.html" class="">
+                        <span class="file-name">具身智能报告</span>
+                        <span class="file-status status-lock">🔒 加密</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        
+        <section class="file-section">
+            <h2>📖 公开文档</h2>
+            <ul class="file-list">
+                
+                <li>
+                    <a href="public/简历 demo.html" class="is-public">
+                        <span class="file-name">简历 demo</span>
+                        <span class="file-status status-public">🌐 公开</span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        
+        <footer>
+            <p>构建时间: 2025-12-02 15:39:10</p>
+        </footer>
+    </div>
+</body>
+</html>

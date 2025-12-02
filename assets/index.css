@@ -1,0 +1,54 @@
+/* ...保留你之前的 .file-list, .file-name 等样式... */
+
+/* 默认卡片样式 (加密状态) */
+.file-list li a {
+    /* ...保留之前的 flex, padding 等属性... */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    border: 1px solid #e1e4e8;
+    border-radius: 8px;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: #24292e;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    
+    /* 默认蓝色竖线 (加密) */
+    border-left: 4px solid #0366d6; 
+}
+
+/* --- 新增：公开文件的特殊样式 --- */
+.file-list li a.is-public {
+    border-left-color: #28a745; /* 绿色竖线 */
+}
+
+/* 悬停效果 */
+.file-list li a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    background-color: #f6f8fa;
+}
+
+/* --- 图标样式 --- */
+.file-status {
+    font-size: 0.85rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* 加密图标 */
+.status-lock {
+    color: #6a737d;
+    background: #f1f3f5;
+}
+
+/* 公开图标 */
+.status-public {
+    color: #155724;
+    background: #d4edda; /* 浅绿色背景 */
+}

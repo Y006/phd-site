@@ -1,0 +1,36 @@
+# --- 1. 基础环境忽略 ---
+__pycache__/
+*.pyc
+.DS_Store
+venv/
+.env
+.vscode/
+.idea/
+
+# --- 2. 核心隐私保护 (黑名单) ---
+passwords.json
+.staticrypt.json
+
+# --- 3. 源码目录控制 (关键) ---
+# 3.1 先忽略 src 下的所有内容
+src/*
+
+# 3.2 【保留 src 根目录结构】
+!src/.gitkeep
+
+# 3.3 【保留 public 目录结构】
+# 第一步：必须显式允许 git 进入 public 目录，否则里面的规则都不生效
+!src/public/
+# 第二步：忽略 public 下的所有内容 (防止你误把文件放进去后上传了)
+src/public/*
+# 第三步：重新把锚点文件放出来 (必须写在 src/public/* 后面！)
+!src/public/.gitkeep
+
+# 3.4 【保留根目录示例文件】
+!src/example.md
+# (已删除 !src/public/example_public.md，确保 public 下没有任何示例文件)
+
+# --- 4. 构建产物 ---
+# 推荐上传 docs，这样别人可以直接看你的 Demo 效果
+# docs/
+doc/.build_cache
