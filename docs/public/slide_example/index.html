@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <title>我的汇报 PPT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/theme/white.min.css" id="theme">
+    <link rel="stylesheet" href="uestc-theme.css"> </head>
+
+<body class="footer-style-double" data-aspect-ratio="16:9">
+
+    <!-- PPT 容器：用于固定比例显示 -->
+    <div class="ppt-container">
+        <div class="ppt-content">
+
+            <div id="beamer-header"></div>
+
+            <div id="beamer-footer">
+                <div class="footer-row footer-row-upper">
+                    <div class="footer-left">汇报人：张三</div>
+                    <div class="footer-right">汇报日期：2025-06-26</div>
+                </div>
+                <div class="footer-row footer-row-lower">
+                    <div class="footer-left">文献汇报：Title of the Paper</div>
+                    <div class="footer-right-container"><span id="slide-number">1 / ?</span></div>
+                </div>
+            </div>
+
+            <div class="reveal">
+        <div class="slides">
+
+            <section data-section="标题页">
+                <div class="title-box">
+                    <h1>文献汇报</h1>
+                    <h2>Title of the paper to be reported</h2>
+                </div>
+                <div class="text-center mt-20">
+                    <p><strong>汇报人：张三</strong></p>
+                    <p class="text-sm">电子科技大学 · 信息与通信工程学院</p>
+                </div>
+            </section>
+
+<section data-section="核心方法">
+    <h3>主要修改内容与示例 (四分栏布局)</h3>
+
+    <div class="grid-2x2">
+        
+        <div class="quarter-block">
+            <div class="quarter-title">化繁为简</div>
+            <div class="quarter-content">
+                我认为在之前的版本中，我们增加了太多可选择的内容。
+                相反，很多东西被反复用到，例如四分块，因为在组合的大屏幕上，
+                将字体调小，每四分之一的屏幕放置一份内容非常清晰。
+            </div>
+        </div>
+
+        <div class="quarter-block">
+            <div class="quarter-title">自定义 LaTeX 环境</div>
+            <div class="quarter-content">
+                <pre><code class="latex" style="font-size: 14px; line-height: 1.2;">
+\newenvironment{quarterblock}[1]{%
+  \begin{minipage}[t]{\linewidth}%
+    {\scriptsize #1\par}% 标题
+    \uestcline
+    \tiny % 正文
+  }{%
+  \end{minipage}%
+}
+                </code></pre>
+            </div>
+        </div>
+
+        <div class="quarter-block">
+            <div class="quarter-title">制作逻辑</div>
+            <div class="quarter-content">
+                四分块创建的逻辑是这样子的：首先使用 columns 将整个页面分为两列，
+                然后在每一列中使用模板自定义的 quarterblock 环境。
+            </div>
+        </div>
+
+        <div class="quarter-block">
+            <div class="quarter-title">使用说明</div>
+            <div class="quarter-content">
+                上面是这个模板中定义的新 LaTeX 环境。
+                你可以用它创建一个带有水平线的“块”，无需手动编写复杂的 CSS。
+            </div>
+        </div>
+
+    </div>
+</section>
+
+            <section data-section="研究背景">
+                <h3>背景介绍 (双栏布局)</h3>
+                
+                <div class="cols-2">
+                    <div class="col text-left">
+                        <ul>
+                            <li>这是一个左文右图的布局。</li>
+                            <li>使用了 <code>class="cols-2"</code> 自动分栏。</li>
+                            <li>无需手写复杂的 CSS。</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <div style="background:#ddd; height:200px; display:flex; align-items:center; justify-content:center;">
+                            图片占位符
+                        </div>
+                        <p class="text-sm text-center">图 1: 示意图</p>
+                    </div>
+                </div>
+
+                <h3>背景介绍 (双栏布局)</h3>
+                
+                <div class="cols-2">
+                    <div class="col text-left">
+                        <ul>
+                            <li>这是一个左文右图的布局。</li>
+                            <li>使用了 <code>class="cols-2"</code> 自动分栏。</li>
+                            <li>无需手写复杂的 CSS。</li>
+                        </ul>
+                    </div>
+                    <div class="col">
+                        <div style="background:#ddd; height:200px; display:flex; align-items:center; justify-content:center;">
+                            图片占位符
+                        </div>
+                        <p class="text-sm text-center">图 1: 示意图</p>
+                    </div>
+                </div>
+            </section>
+
+            <section data-section="核心方法">
+                <h3>算法核心</h3>
+                
+                <div class="block block-standard">
+                    <div class="block-title">定义 1</div>
+                    <div class="block-content">
+                        这里输入定义的内容...
+                    </div>
+                </div>
+
+                <div class="block block-alert">
+                    <div class="block-title">注意</div>
+                    <div class="block-content">
+                        这里输入需要强调的内容...
+                    </div>
+                </div>
+            </section>
+
+            <section data-section="实验结果">
+                <h3>数学公式支持</h3>
+                <div class="block block-example">
+                    <div class="block-title">公式示例</div>
+                    <div class="block-content">
+                        支持 LaTeX 语法：
+                        $$ f(x) = \int_{-\infty}^\infty \hat{f}(\xi)\,e^{2\pi i \xi x} \,d\xi $$
+                    </div>
+                </div>
+            </section>
+
+            <section data-section="致谢" class="slide-center">
+                <h1 style="font-size: 150px; color: var(--uestc-blue);">Thanks!</h1>
+            </section>
+
+        </div>
+    </div>
+
+        </div>
+    </div>
+    <!-- PPT 容器结束 -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/reveal.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.5.0/plugin/math/math.min.js"></script>
+    <script src="uestc-logic.js"></script>
+</body>
+</html>
