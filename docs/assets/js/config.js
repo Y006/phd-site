@@ -34,7 +34,7 @@ const PPT_CONFIG = {
     footer: {
         enabled: true,
         author: "汇报人：邱金羽",
-        title: new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-'),
+        title: "汇报日期：" + new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '-'),
         paper_name: "Learning Radiance Fields from a SingleSnapshot Compressive Image"
     },
     
