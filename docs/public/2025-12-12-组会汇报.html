@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>12-09 组会汇报 - 文献汇报</title>
+    
+    <!-- 核心样式 -->
+    <link rel="stylesheet" href="2025-12-12-组会汇报/assets/css/main.css">
+    
+    <!-- 代码高亮 -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-one-light.min.css" rel="stylesheet">
+    
+    <!-- 配置文件 -->
+    <script src="2025-12-12-组会汇报/assets/js/config.js"></script>
+</head>
+<body>
+    <div id="stage">
+        
+        <!-- ========================================== -->
+        <!-- 封面页：文献信息 -->
+        <!-- ========================================== -->
+        <div class="slide active layout-cover" data-chapter-id="title" data-chapter-title="标题页">
+            <div class="ppt-body" style="
+                display: flex; 
+                flex-direction: column; 
+                align-items: center; 
+                justify-content: center; 
+                height: 100%; 
+                font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+                background-color: #fff;">
+                
+                <div style="
+                    width: 90%; 
+                    max-width: 1200px; 
+                    background-color: rgb(17, 94, 162); /* UESTC Blue #115EA2 */
+                    color: white; 
+                    padding: 50px 30px; 
+                    border-radius: 12px; 
+                    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); /* 较重的阴影，模仿图片效果 */
+                    text-align: center;
+                    margin-bottom: 50px; 
+                    position: relative;">
+                    
+                    <div style="
+                        font-size: 42px; 
+                        font-weight: 400; /* 中文通常不加粗看起来更清秀 */
+                        letter-spacing: 5px; 
+                        margin-bottom: 25px;
+                        opacity: 0.95;">
+                        文献汇报
+                    </div>
+
+                    <h1 style="
+                        font-size: 40px; 
+                        margin: 0; 
+                        font-weight: 600; 
+                        line-height: 1.3; 
+                        color: #ffffff;
+                        text-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+                        Learning Radiance Fields from a Single Snapshot Compressive Image
+                    </h1>
+                </div>
+
+                <div style="text-align: center; color: #000; width: 100%; max-width: 1100px;">
+                    
+                    <div style="
+                        font-size: 26px; 
+                        margin-bottom: 25px; 
+                        font-weight: 500; 
+                        color: #000;">
+                        Yunhao Li<sup>1,*</sup> &nbsp;&nbsp;
+                        Xiang Liu<sup>2,*</sup> &nbsp;&nbsp;
+                        Xiaodong Wang<sup>2</sup> &nbsp;&nbsp;
+                        Xin Yuan<sup>2,†</sup> &nbsp;&nbsp;
+                        Peidong Liu<sup>2,†</sup>
+                    </div>
+                    
+                    <div style="
+                        font-size: 20px; 
+                        color: #333; 
+                        margin-bottom: 40px; 
+                        line-height: 1.6;">
+                        <div><sup>1</sup> 浙江大学软件学院 & 西湖大学</div>
+                        <div><sup>2</sup> 西湖大学工程学院</div>
+                    </div>
+                    
+                    <div style="
+                        font-size: 22px; 
+                        color: #000; 
+                        font-weight: 500;
+                        margin-top: 10px;">
+                        
+                        <div style="margin-bottom: 10px;">
+                            出版：
+                            <span style="font-weight: bold;">CVPR 2024</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 研究背景 -->
+        <!-- ========================================== -->
+        <div class="slide layout-grid layout-grid-2" data-chapter-id="background" data-chapter-title="研究背景">
+            <div class="ppt-body">
+                <div class="page-header">
+                    <h1>什么是快照压缩成像？</h1>
+                    <p>快照压缩成像（Snapshot Compressive Imaging, SCI）</p>
+                </div>
+                <div class="grid-container">
+                    <div class="card">
+                        <div class="card-title" style="color: #6c5ce7; font-size: 24px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #e1e1e1; padding-bottom: 10px;">
+                            📷 快照压缩成像 (SCI) 原理
+                        </div>
+                        <div class="card-body" style="font-size: 20px; line-height: 1.6; color: #333;">
+                            <ol style="padding-left: 0; margin-bottom: 0; list-style-type: decimal !important; list-style-position: inside !important;">
+                                <li style="margin-bottom: 15px; font-size: 22px;">
+                                    <strong>核心定义：</strong>
+                                    <div style="margin-bottom: 15px; margin-top: 5px; font-size: 22px;">
+                                    一种通过光学硬件编码将高维数据（如视频流）压缩记录在单帧二维图像中，再利用算法逆向还原的计算成像技术。（短曝光时间：例如小于20毫秒）
+                                    </div>
+                                </li>
+
+                                <li style="margin-bottom: 15px; font-size: 22px;">
+                                    <strong>用途：</strong>
+                                    <div style="margin-bottom: 15px; margin-top: 5px; font-size: 22px;">
+                                        <ul>
+                                            <li style="margin-bottom: 15px; font-size: 22px;">捕捉高速场景，特别的，能使得低成本CCD/CMOS相机能够捕捉高速场景</li>
+                                            <li style="margin-bottom: 15px; font-size: 22px;">减少数据存储与传输需求</li>
+                                            <li style="margin-bottom: 15px; font-size: 22px;">提供额外的隐私保护</li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li style="margin-bottom: 15px; font-size: 22px;">
+                                    <strong>前向物理模型：</strong>
+                                    <div style="margin-bottom: 15px; margin-top: 5px; font-size: 22px;">
+                                        假设视频场景包含 $B$ 帧高速图像，记为 $\{\mathbf{X}_k\}_{k=1}^B \in \mathbb{R}^{n_x \times n_y}$。每一帧图像分别被对应的编码掩膜（Masks） $\{\mathbf{M}_k\}_{k=1}^B \in \mathbb{R}^{n_x \times n_y}$ 进行调制。
+                                    </div>
+                                    <!-- <div style="margin-bottom: 15px; font-size: 22px; padding-left: 20px;">
+                                        <ol style="list-style-type: decimal !important; list-style-position: inside !important; margin-top: 10px; font-size: 22px; padding-left: 0;">
+                                            <li style="margin-bottom: 10px; font-size: 22px;">
+                                                <strong>光调制</strong>：每一帧图像 $\mathbf{X}_k$ 与对应的掩膜 $\mathbf{M}_k$ 进行<strong>哈达玛积</strong>（Hadamard product）。
+                                            </li>
+                                            <li style="margin-bottom: 15px; font-size: 22px;">
+                                                <strong>积分成像</strong>：在一个曝光时间内，所有调制后的帧在传感器上叠加，并受到噪声 $\mathbf{G}$ 的影响。
+                                            </li>
+                                        </ol>
+                                    </div> -->
+                                    <div>
+                                        最终得到的二维快照测量值 $\mathbf{Y} \in \mathbb{R}^{n_x \times n_y}$ 建模为：
+                                        <div style="text-align: center; margin: 15px 0; font-size: 22px;">
+                                            $$ \mathbf{Y} = \sum_{k=1}^{B} \mathbf{X}_k \odot \mathbf{M}_k + \mathbf{G}$$
+                                        </div>
+                                    </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title" style="color: #6c5ce7;">移动相机快照压缩成像（SCI）原理示意图</div>
+                        <div style="height: 20px;"></div>
+                        <div class="card-body">
+                            <figure style="text-align:center; margin: 25px 0 0 0;">
+                                <img src="2025-12-12-组会汇报/assets/pics/Gemini_Generated_Image_s2gc1bs2gc1bs2gc.png" class="zoomable-img"
+                                                    style="width: 95%; margin: 0 auto; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                <figcaption style="margin-top: 10px; font-size: 20px; color: #666;">
+                                    （图片可以点击放大）
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="slide layout-grid layout-grid-3" data-chapter-id="background" data-chapter-title="3D场景重建方法">
+            <div class="ppt-body">
+                <div class="page-header">
+                    <h1>3D 场景重建的方法介绍</h1>
+                    <p>从传统 SfM 到神经辐射场与高斯泼溅的技术演进</p>
+                </div>
+                
+                <div class="grid-container">
+                    
+                    <div class="card card-academic-blue">
+                        <div class="card-title">COLMAP (传统方法)</div>
+                        <div class="card-body">
+                            <p style="font-size: 20px;" line-height: 1.6; margin-bottom: 10px;">
+                                <strong>原理机制：</strong><br>
+                                基于运动恢复结构 (SfM)。通过提取图像特征（SIFT）并进行匹配，恢复稀疏点云和相机位姿。
+                            </p>
+                            
+                            <p style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">核心评价：</p>
+                            
+                            <ul class="pretty-list" style="font-size: 20px;" line-height: 1.6;">
+                                <li style="font-size: 20px;">
+                                    <strong>预处理基石</strong>
+                                    <br>几乎是所有 NeRF/3DGS 算法的必经步骤，提供相机外参。
+                                </li >
+                                <li style="font-size: 20px;">
+                                    <strong>工业标准</strong>
+                                    <br>在无序图片集上鲁棒性极强。
+                                </li>
+                                <li style="font-size: 20px;">
+                                    <strong>局限性</strong>
+                                    <br>计算耗时长，且无法直接渲染照片级图像。
+                                </li>
+                            </ul>
+                            <figure style="text-align:center; margin: 25px 0 0 0;">
+                                <img src="2025-12-12-组会汇报/assets/pics/GifMerge_480x270.gif" class="zoomable-img"
+                                                    style="width: 50%; margin: 0 auto; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                <figcaption style="margin-top: 10px; font-size: 20px; color: #666;">
+                                    COLMAP运行结果，得到稀疏点云和相机姿态
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </div>
+
+                    <div class="card card-academic-green">
+                        <div class="card-title">NeRF (隐式表达)</div>
+                        <div class="card-body">
+                            <p style="font-size: 20px;" line-height: 1.6; margin-bottom: 10px;">
+                                <strong>原理机制：</strong><br>
+                                使用多层感知机 (MLP) 将坐标映射为颜色与密度。通过“体渲染”积分合成图像，无显式网格。
+                            </p>
+
+                            <p style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">核心评价：</p>
+                            
+                            <ul class="pretty-list" style="font-size: 20px;" line-height: 1.6;">
+                                <li style="font-size: 20px;">
+                                    <strong>画质巅峰</strong>
+                                    <br>完美复现高光、反射等视点相关效应。
+                                </li>
+                                <li style="font-size: 20px;">
+                                    <strong>存储紧凑</strong>
+                                    <br>场景被压缩在仅数 MB 的网络权重中。
+                                </li style="font-size: 20px;">
+                                <li>
+                                    <strong>局限性</strong>
+                                    <br>推理速度极慢（秒级/帧），难以实时交互。
+                                </li>
+                            </ul>
+                            <figure style="text-align:center; margin: 25px 0 0 0;">
+                                <img src="2025-12-12-组会汇报/assets/pics/68747470733a2f2f626d696c642e6769746875622e696f2f6e6572662f6c65676f5f3230306b5f323536772e676966.gif" class="zoomable-img"
+                                                    style="width: 40%; margin: 0 auto; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                <figcaption style="margin-top: 10px; font-size: 20px; color: #666;">
+                                    NeRF 的运行结果
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </div>
+
+                    <div class="card card-academic-red">
+                        <div class="card-title">3DGS (显式表达)</div>
+                        <div class="card-body">
+                            <p style="font-size: 20px;" line-height: 1.6; margin-bottom: 10px;">
+                                <strong>原理机制：</strong><br>
+                                使用数百万个 3D 高斯椭球作为基元（位置、协方差、球谐系数），结合高效光栅化投影。
+                            </p>
+
+                            <p style="font-size: 20px; font-weight: bold; margin-bottom: 5px;">核心评价：</p>
+                            
+                            <ul class="pretty-list" style="font-size: 20px;" line-height: 1.6;">
+                                <li style="font-size: 20px;">
+                                    <strong>速度革命</strong>
+                                    <br>画质媲美 NeRF，且支持 100+ FPS 实时渲染。
+                                </li>
+                                <li style="font-size: 20px;">
+                                    <strong>极速训练</strong>
+                                    <br>训练时间通常仅为 NeRF 的 1/10。
+                                </li>
+                                <li style="font-size: 20px;">
+                                    <strong>可编辑性</strong>
+                                    <br>显式表达使得场景内容的修改更加直观。
+                                </li>
+                            </ul>
+                            <figure style="text-align:center; margin: 25px 0 0 0;">
+                                <img src="2025-12-12-组会汇报/assets/pics/top_view_image_alpha.gif" class="zoomable-img"
+                                                    style="width: 50%; margin: 0 auto; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                <figcaption style="margin-top: 10px; font-size: 20px; color: #666;">
+                                    3DGS 的运行结果
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="slide layout-grid layout-grid-3" data-chapter-id="background" data-chapter-title="3DGS 演示">
+            <div class="ppt-body">
+                <div class="page-header">
+                    <h1>3DGS 演示</h1>
+                </div>
+                
+                <div style="
+                    width: 1500px;       /* 【宽度】固定为 1000px */
+                    margin: 20px auto;   /* 让窗口在页面中水平居中 */
+                    background: #fff; 
+                    border-radius: 12px; 
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+                    overflow: hidden; 
+                    border: 1px solid #d1d1d1;">
+
+                    <div style="
+                        background: #f1f1f1; 
+                        padding: 12px 15px; 
+                        border-bottom: 1px solid #d1d1d1; 
+                        display: flex; 
+                        gap: 8px; 
+                        align-items: center;">
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #ff5f56; border: 1px solid #e0443e;"></div>
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #ffbd2e; border: 1px solid #dea123;"></div>
+                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #27c93f; border: 1px solid #1aab29;"></div>
+                    </div>
+
+                    <iframe 
+                        src="2025-12-12-组会汇报/3DGS 图像重构实验室.html" 
+                        style="
+                            width: 100%;     /* 宽度跟随容器，即 1000px */
+                            height: 690px;   /* 【高度】固定为 700px */
+                            border: none; 
+                            display: block;">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 创新点与方法论 -->
+        <!-- ========================================== -->
+        <div class="slide" data-chapter-id="contributions" data-chapter-title="创新点与方法论">
+            <div class="ppt-body">
+                <h1>主要创新点：</h1>
+                    <ol style="padding-left: 0; margin-bottom: 0; list-style-type: decimal !important; list-style-position: inside !important;">
+                        <div style="margin-top: 10px; margin-left: 28px; font-family: sans-serif; line-height: 1.5; color: #333;">
+                                        
+                            <div style="margin-bottom: 20px;">
+                                            <h3 style="font-size: 32px; margin: 0 0 6px 0; color: #000;">
+                                                1. 引入 3D 几何约束 (Multi-view Consistency)
+                                            </h3>
+                                            <ul style="margin: 0; margin-left: 28px; padding-left: 0; font-size: 24px;">
+                                                <li style="margin-bottom: 6px; list-style-type: disc;">
+                                                    <span style="font-size: 28px; color: #c0392b; font-weight: bold;">现有局限：</span>
+                                                    <span style="font-size: 28px; color: #666;">传统 SCI 复原算法通常逐帧处理，缺乏潜在 3D 场景结构的约束，导致高速运动下复原视频出现几何畸变或非刚性抖动。</span>
+                                                </li>
+                                                <li style="list-style-type: disc;">
+                                                    <span style="font-size: 28px; color: #27ae60; font-weight: bold;">本文突破：</span>
+                                                    <span style="font-size: 28px;">首次将 SCI 逆问题建模为 3D 场景渲染问题（NeRF/3DGS），强制确保复原出的每一帧在时空上保持严格的多视角几何一致性。</span>
+                                                </li>
+                                            </ul>
+                            </div>
+
+                            <div>
+                                            <h3 style="font-size: 32px; margin: 0 0 6px 0; color: #000;">
+                                                2. 解决 3DGS 的“冷启动”难题 (Initialization)
+                                            </h3>
+                                            <ul style="margin: 0; margin-left: 20px; padding-left: 0; font-size: 16px;">
+                                                <li style="margin-bottom: 6px; list-style-type: disc;">
+                                                    <span style="font-size: 28px;color: #c0392b; font-weight: bold;">现有局限：</span>
+                                                    <span style="font-size: 28px;color: #666;">SCI 仅有一张压缩测量图，无法运行传统 COLMAP，导致严重依赖初始点云和位姿的 3DGS 无法直接从零优化。</span>
+                                                </li>
+                                                <li style="list-style-type: disc;">
+                                                    <span style="font-size: 28px;color: #27ae60; font-weight: bold;">本文突破：</span>
+                                                    <span style="font-size: 28px;">提出 SCISplat 初始化协议。利用插值与深度学习 SfM 从退化帧中提取粗糙几何与轨迹，弥合了 SCI 数据缺失与 3DGS 强初始化依赖间的鸿沟。</span>
+                                                </li>
+                                            </ul>
+                            </div>
+
+                        </div>
+                    </ol>
+            </div>
+        </div>
+        <div class="slide layout-grid layout-grid-2" data-chapter-id="contributions" data-chapter-title="创新点与方法论">
+            <div class="ppt-body">
+                <div class="page-header">
+                    <h1>重建方法</h1>
+                    <p>重建方法流程</p>
+                </div>
+                <div class="grid-container">
+                    <div class="card">
+                        <div class="card-title" style="color: #6c5ce7; font-size: 26px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #e1e1e1; padding-bottom: 10px;">
+                            所提方法流程
+                        </div>
+                        <div class="card-body" style="font-size: 20px; line-height: 1.6; color: #333;">
+                            <div style="font-family: 'Microsoft YaHei', sans-serif; line-height: 1.5; color: #333; font-size: 20px;">
+
+                                <div style="margin-bottom: 12px; border-left: 5px solid #a1c988; padding-left: 10px; font-size: 20px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 26px; font-weight: bold;">
+                                        1. 核心逻辑：Analysis-by-Synthesis
+                                        <span style="font-size: 20px; font-weight: normal; color: #666;">- 合成分析法</span>
+                                    </h3>
+                                    <ul style="margin: 0; padding-left: 18px; text-align: justify; font-size: 20px;">
+                                        <li style="margin-bottom: 3px; font-size: 20px;">
+                                            <strong>输入 (Input):</strong> 真实观测值 <span style="font-family: serif; font-weight: bold; font-size: 20px;">Y</span> (模糊的 2D 图像) + 已知掩膜 <span style="font-family: serif; font-weight: bold; font-size: 20px;">M</span>。
+                                        </li>
+                                        <li style="margin-bottom: 3px; font-size: 20px;">
+                                            <strong>合成过程 (Forward):</strong> 网络生成推测帧 <span style="font-family: serif; font-weight: bold; font-size: 20px;">X̂</span>，经物理模型 <span style="font-family: serif; font-weight: bold; font-size: 20px;">Ŷ = ∑(X̂ ⊙ M)</span> 生成模拟观测值。
+                                        </li>
+                                        <li style="font-size: 20px;">
+                                            <strong>优化目标 (Goal):</strong> 最小化模拟值 <span style="font-family: serif; font-weight: bold; font-size: 20px;">Ŷ</span> 与真实值 <span style="font-family: serif; font-weight: bold; font-size: 20px;">Y</span> 的差异，反向更新网络参数。
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div style="margin-bottom: 12px; border-left: 5px solid #e2a3b2; padding-left: 10px; font-size: 20px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 26px; font-weight: bold;">
+                                        2. 关键模块：两条技术路线
+                                        <span style="font-size: 20px; font-weight: normal; color: #666;">- NeRF vs Splat</span>
+                                    </h3>
+                                    
+                                    <div style="margin-bottom: 8px; font-size: 20px;">
+                                        <strong style="color: #a39bd3; font-size: 20px;">A. SCINeRF (隐式表示):</strong>
+                                        <ul style="margin: 2px 0 2px 18px; padding-left: 0; font-size: 20px;">
+                                            <li style="margin-bottom: 2px; font-size: 20px;">
+                                                <strong>核心假设:</strong> 场景静态，相机轨迹建模为平滑的 <strong>样条曲线 (Spline)</strong>。
+                                            </li>
+                                            <li style="font-size: 20px;">
+                                                <strong>难点:</strong> 需同时优化场景 MLP 参数与单次曝光内的 <strong>相机位姿 Ti</strong>。
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <div style="font-size: 20px;">
+                                        <strong style="color: #ebbd9f; font-size: 20px;">B. SCISplat (显式表示):</strong>
+                                        <div style="margin-left: 10px; font-size: 20px;">
+                                            <span style="font-size: 20px;">使用 <strong>3D 高斯球</strong> 表示场景。通过 <strong>分裂与克隆 (Densification)</strong> 处理细节。相比 NeRF 速度更快，细节保留更好。</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="border-left: 5px solid #b4c9e8; padding-left: 10px; font-size: 20px;">
+                                    <h3 style="margin: 0 0 5px 0; font-size: 26px; font-weight: bold;">
+                                        C. 初始化协议 (Initialization)
+                                        <span style="font-size: 20px; font-weight: normal; color: #666;">- 解决 Cold Start</span>
+                                    </h3>
+                                    <p style="margin: 0 0 5px 0; text-align: justify; font-size: 20px;">
+                                        由于缺乏多视角清晰图像，传统 COLMAP 失效。作者提出了一套“先猜后修”的流程：
+                                    </p>
+                                    <ul style="margin: 0; padding-left: 18px; text-align: justify; font-size: 20px;">
+                                        <li style="margin-bottom: 3px; font-size: 20px;">
+                                            <strong>Step 1:</strong> 简单插值恢复低质量、含伪影的视频帧 <span style="font-family: serif; font-weight: bold; font-size: 20px;">X̃</span>。
+                                        </li>
+                                        <li style="margin-bottom: 3px; font-size: 20px;">
+                                            <strong>Step 2:</strong> 喂给深度学习 SfM (如 DUSt3R)，脑补出 <strong>初始点云 Q</strong> 和 <strong>轨迹 Ti</strong>。
+                                        </li>
+                                        <li style="font-size: 20px;">
+                                            <strong>Step 3:</strong> 将此点云作为 3DGS 的初始位置，开始后续优化。
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-title" style="color: #6c5ce7;">文章所提方法重建流程图</div>
+                        <div class="card-body">
+                            <!-- <ol style="padding-left: 0; margin-bottom: 0; list-style-type: decimal !important; list-style-position: inside !important;">
+                                <li style="margin-bottom: 15px; font-size: 22px;">
+                                    <strong>方法：</strong>
+                                    
+                                    <div style="margin-top: 10px; margin-left: 28px; font-family: sans-serif; line-height: 1.5; color: #333;">
+                                        
+                                        <div style="margin-bottom: 20px;">
+                                            <h3 style="font-size: 20px; margin: 0 0 6px 0; color: #000;">
+                                                1. 输入：
+                                            </h3>
+                                            <ul style="margin: 0; margin-left: 20px; padding-left: 0; font-size: 16px;">
+                                                <li style="margin-bottom: 6px; list-style-type: disc;">
+                                                    Real Measurement $Y$: 你实验室里的相机实际拍到的那张“糊”掉的、被编码掩膜调制过的 2D 图片。
+                                                    Modulation Masks $M$: 你加载在 SLM 或编码光圈上的已知掩膜图案。
+                                                </li>
+                                                <li style="list-style-type: disc;">
+                                                    <span style="color: #27ae60; font-weight: bold;">本文突破：</span>
+                                                    <span>首次将 SCI 逆问题建模为 3D 场景渲染问题（NeRF/3DGS），强制确保复原出的每一帧在时空上保持严格的多视角几何一致性。</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                        <div>
+                                            <h3 style="font-size: 20px; margin: 0 0 6px 0; color: #000;">
+                                                2. 解决 3DGS 的“冷启动”难题 (Initialization)
+                                            </h3>
+                                            <ul style="margin: 0; margin-left: 20px; padding-left: 0; font-size: 16px;">
+                                                <li style="margin-bottom: 6px; list-style-type: disc;">
+                                                    <span style="color: #c0392b; font-weight: bold;">现有局限：</span>
+                                                    <span style="color: #666;">SCI 仅有一张压缩测量图，无法运行传统 COLMAP，导致严重依赖初始点云和位姿的 3DGS 无法直接从零优化。</span>
+                                                </li>
+                                                <li style="list-style-type: disc;">
+                                                    <span style="color: #27ae60; font-weight: bold;">本文突破：</span>
+                                                    <span>提出 SCISplat 初始化协议。利用插值与深度学习 SfM 从退化帧中提取粗糙几何与轨迹，弥合了 SCI 数据缺失与 3DGS 强初始化依赖间的鸿沟。</span>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </li>
+                            </ol> -->
+                            <figure style="text-align:center; margin: 25px 0 0 0;">
+                                <img src="2025-12-12-组会汇报/assets/pics/pipeline_purple.png" class="zoomable-img"
+                                                    style="width: 100%; margin: 0 auto; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                <figcaption style="margin-top: 10px; font-size: 20px; color: #666;">
+                                    （图片可以点击放大）
+                                </figcaption>
+                            </figure>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- AI 使用小技巧 -->
+        <!-- ========================================== -->
+        <div class="slide layout-grid layout-grid-2" data-chapter-id="AI" data-chapter-title="AI 使用小技巧分享">
+            <div class="ppt-body">
+                <div class="page-header">
+                    <h1>AI 工具流推荐</h1>
+                    <p>从通用对话机器人 (ChatBot) 到 编程智能体 (Agent)</p>
+                </div>
+                
+                <div class="grid-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; align-items: start;">
+                    
+                    <div class="card" style="border-top: 4px solid #0984e3; background: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                        <div class="card-title" style="color: #0984e3; font-size: 22px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #e1e1e1; padding-bottom: 10px;">
+                            🤖 AI 对话机器人
+                        </div>
+                        <div class="card-body">
+                            <ol>
+                                <li>类别：ChatGPT、Gemini、Claude 等</li>
+                                <li>目前最推荐的：Gemini 3 Pro</li>
+                                <li>Gemini 3 Pro 的功能介绍：
+                                        <div style="
+                                            display: grid;
+                                            grid-template-columns: 1fr 1fr;
+                                            gap: 20px;
+                                            margin-top: 15px;
+                                        ">
+
+                                            <div style="background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e1e1e1;">
+                                                <ul style="margin:0; padding-left:20px;">
+                                                    <li><strong>🔍 Deep Research：</strong>具备深度推理能力的联网调研，可自主检索海量文献，辅助撰写高水准论文综述。<br></li>
+                                                </ul>
+                                                <img src="2025-12-12-组会汇报/assets/pics/Snipaste_2025-12-11_21-24-05.png" class="zoomable-img"
+                                                    style="width: 50%; margin: 12px auto 0; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                            </div>
+
+                                            <div style="background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e1e1e1;">
+                                                <ul style="margin:0; padding-left:20px;">
+                                                    <li><strong>🎨 Banana：</strong>顶尖的 AI 绘图模型，精准理解自然语言描述，即时生成高质量 PNG 图像。</li>
+                                                </ul>
+                                                <img src="2025-12-12-组会汇报/assets/pics/Snipaste_2025-12-11_21-28-41.png" class="zoomable-img"
+                                                    style="width: 50%; margin: 12px auto 0; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                            </div>
+
+                                            <div style="background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e1e1e1;">
+                                                <ul style="margin:0; padding-left:20px;">
+                                                    <li><strong>⚡ Canvas：</strong>所见即所得的代码环境，可以直接运行 HTML/CSS 展示网页交互效果。<br><br></li>
+                                                </ul>
+                                                <img src="2025-12-12-组会汇报/assets/pics/微信图片_20251127142316_1277_86.png" class="zoomable-img"
+                                                    style="width: 50%; margin: 12px auto 0; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                            </div>
+
+                                            <div style="background: #ffffff; padding: 15px; border-radius: 8px; border: 1px solid #e1e1e1;">
+                                                <ul style="margin:0; padding-left:20px;">
+                                                    <li><strong>📓 NotebookLM：</strong>智能科研助手，可由调研内容生成摘要、音频概览及演示文稿大纲。</li>
+                                                </ul>
+                                                <img src="2025-12-12-组会汇报/assets/pics/Snipaste_2025-12-11_21-27-25.png" class="zoomable-img"
+                                                    style="width: 50%; margin: 12px auto 0; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                            </div>
+
+                                        </div>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="card" style="border-top: 4px solid #6c5ce7; background: #f8f9fa; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                        <div class="card-title" style="color: #6c5ce7; font-size: 24px; font-weight: bold; margin-bottom: 15px; border-bottom: 1px solid #e1e1e1; padding-bottom: 10px;">
+                            💻 AI 编程智能体 (Agent)
+                        </div>
+                        <div class="card-body">
+                            <!-- <ol>
+                                <li>类别：GitHub Copilot、Cursor 等</li>
+                                <li>我使用的：GitHub Copilot</li>
+                                    <ul>
+                                        <li>理由：学生认证可免费使用高阶模型 (如 GPT-4o, Claude 3.5 Sonnet, Gemini 1.5 Pro)。</li>
+                                    </ul>
+                                <li>Agent的主要优势</li>
+                                    <ul>
+                                        <li>ai 可以轻松读取你的整个仓库，所以对于多文件的代码架构比较友好</li>
+                                        <li>ai 可以生成代码，特别是生成多文件的代码时，可以帮助你把整个文件架构管理的很合理</li>
+                                        <li>修改代码文件时候，会主动记录日志，并且提交 git 信息用于你回档和管理</li>
+                                        <li>执行代码时候，会让你确认是否在终端执行运行命令，并且可以读取终端报错，不断的扫描错误</li>
+                                    </ul>
+                            <ol> -->
+                            <ol>
+                                <li><strong>主流工具：</strong>GitHub Copilot、Cursor 等</li>
+                                <li><strong>个人推荐：</strong>GitHub Copilot</li>
+                                    <ul>
+                                        <li><strong>核心理由：</strong>凭学生认证可免费解锁多种模型 (含 GPT-4o, Claude 3.5 Sonnet, Gemini 1.5 Pro)。</li>
+                                    </ul>
+                                <li><strong>Agent (智能体) 核心优势：</strong></li>
+                                    <ul>
+                                        <li><strong>全库感知：</strong>能深入理解整个仓库 (Repository) 的上下文，对复杂的多文件架构开发极具优势。</li>
+                                        <li><strong>架构规划：</strong>在生成多文件代码时，不再是零散片段，而是能辅助建立合理的文件层级与目录结构。</li>
+                                        <li><strong>自动化版本管理：</strong>修改代码后主动生成规范的 Git Commit 日志，强制养成良好的代码管理习惯。</li>
+                                        <li><strong>闭环调试：</strong>深度集成终端交互，能执行运行命令并实时读取报错流 (Error Stream)，实现“运行-诊断-修复”的闭环。</li>
+                                    </ul>
+                            <ol>
+                            
+                            <!-- 额外插入的组件 -->
+                            <!-- 额外插入的组件 -->
+                            <div class="demo-container" style="margin-top: 15px; background: #fff; border: 2px solid #333; border-radius: 8px; overflow: hidden; font-family: 'SimHei', 'Microsoft YaHei', sans-serif; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+
+                                <div style="display: flex; background: #f0f0f0; border-bottom: 2px solid #333;">
+                                    <button onclick="switchDemoTab('arch')" id="btn-arch" style="flex: 1; padding: 12px; border: none; background: #333; color: #fff; font-weight: 900; font-size: 20px;" cursor: pointer; transition: all 0.2s;">
+                                        📁 场景一：架构对比
+                                    </button>
+                                    <button onclick="switchDemoTab('git')" id="btn-git" style="flex: 1; padding: 12px; border: none; background: #f0f0f0; color: #666; font-weight: 900; font-size: 20px;" cursor: pointer; transition: all 0.2s;">
+                                        🔄 场景二：Git 流水线
+                                    </button>
+                                </div>
+
+                                <div style="padding: 15px; min-height: 200px; position: relative; box-sizing: border-box;">
+
+                                    <div id="view-arch" style="display: flex; gap: 15px; height: 100%;">
+                                        
+                                        <div style="flex: 1; border: 2px dashed #c0392b; background: #fff5f5; border-radius: 6px; padding: 12px; display: flex; flex-direction: column;">
+                                            <h4 style="margin: 0 0 10px 0; color: #c0392b; font-size: 20px;" font-weight: 900;">❌ 无 Agent (混乱)</h4>
+                                            <div style="flex: 1; font-family: 'SimHei', monospace; font-size: 16px; font-weight: bold; color: #333; line-height: 1.4;">
+                                                <div>📄 main_final_v2.py</div>
+                                                <div>📄 utils_new.py</div>
+                                                <div>📄 test_data.ipynb</div>
+                                                <div>📄 temp_fix.py</div>
+                                                <div>📄 untitled1.py</div>
+                                                <div style="margin-top: 5px; color: #c0392b; font-size: 16px;">⚠️ 扁平堆积/维护难</div>
+                                            </div>
+                                        </div>
+
+                                        <div style="flex: 1; border: 2px solid #27ae60; background: #f0fff4; border-radius: 6px; padding: 12px; display: flex; flex-direction: column;">
+                                            <h4 style="margin: 0 0 10px 0; color: #27ae60; font-size: 20px;" font-weight: 900;">✅ 有 Agent (清晰)</h4>
+                                            <div style="flex: 1; font-family: 'SimHei', monospace; font-size: 16px; font-weight: bold; color: #000; line-height: 1.4;">
+                                                <div>📂 project-root/</div>
+                                                <div style="padding-left: 15px; border-left: 3px solid #ddd;">
+                                                    <div style="color: #000;">├── src/</div>
+                                                    <div style="padding-left: 15px; border-left: 3px solid #ddd;">
+                                                        <div>│   ├── components/</div>
+                                                        <div>│   └── app.py</div>
+                                                    </div>
+                                                    <div style="color: #000;">├── tests/</div>
+                                                    <div>└── README.md</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="view-git" style="display: none; gap: 15px; height: 100%;">
+                                        
+                                        <div style="flex: 1.2; display: flex; flex-direction: column; justify-content: center;">
+                                            <h4 style="margin: 0 0 10px 0; color: #6c5ce7; font-size: 20px;" font-weight: 900;">🛠️ 自动化流水线</h4>
+                                            
+                                            <div style="display: flex; flex-direction: column; gap: 6px; font-size: 16px; font-weight: bold;">
+                                                <div style="background: #fff; border: 2px solid #999; padding: 6px; border-radius: 4px; display: flex; align-items: center;">
+                                                    <span style="background: #333; color: #fff; padding: 2px 6px; border-radius: 3px; margin-right: 8px; font-size: 20px;">1</span>
+                                                    <span>人工修改代码</span>
+                                                </div>
+                                                <div style="text-align: center; line-height: 8px; color: #333; font-size: 20px;">⬇️</div>
+                                                <div style="background: #eef2ff; border: 2px solid #6c5ce7; padding: 6px; border-radius: 4px; display: flex; align-items: center;">
+                                                    <span style="background: #6c5ce7; color: #fff; padding: 2px 6px; border-radius: 3px; margin-right: 8px; font-size: 20px;">2</span>
+                                                    <span style="color: #6c5ce7;">Agent 分析差异 & 写日志</span>
+                                                </div>
+                                                <div style="text-align: center; line-height: 8px; color: #333; font-size: 20px;">⬇️</div>
+                                                <div style="background: #333; color: #fff; padding: 8px; border-radius: 4px;">
+                                                    <div style="font-family: monospace; font-size: 20px;">$ git commit -m "feat:.."</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div style="flex: 1; border-left: 3px solid #eee; padding-left: 15px;">
+                                            <h4 style="margin: 0 0 10px 0; color: #333; font-size: 20px;" font-weight: 900;">📈 提交历史</h4>
+                                            
+                                            <div style="font-family: 'SimHei', monospace; font-size: 16px; position: relative; padding-left: 20px; line-height: 1.8;">
+                                                <div style="position: absolute; left: 5px; top: 8px; bottom: 8px; width: 3px; background: #ccc;"></div>
+                                                
+                                                <div style="position: relative;">
+                                                    <div style="width: 12px; height: 12px; background: #000; border-radius: 50%; position: absolute; left: -20px; top: 6px;"></div>
+                                                    <span style="color: #007bff; font-weight: 900;">feat:</span> add driver
+                                                </div>
+                                                <div style="position: relative;">
+                                                    <div style="width: 12px; height: 12px; background: #c0392b; border-radius: 50%; position: absolute; left: -20px; top: 6px;"></div>
+                                                    <span style="color: #c0392b; font-weight: 900;">fix:</span> memory leak
+                                                </div>
+                                                <div style="position: relative;">
+                                                    <div style="width: 12px; height: 12px; background: #8e44ad; border-radius: 50%; position: absolute; left: -20px; top: 6px;"></div>
+                                                    <span style="color: #8e44ad; font-weight: 900;">chore:</span> docs update
+                                                </div>
+                                                <div style="position: relative;">
+                                                    <div style="width: 12px; height: 12px; background: #27ae60; border-radius: 50%; position: absolute; left: -20px; top: 6px;"></div>
+                                                    <span style="color: #27ae60; font-weight: 900;">init:</span> scaffold
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <script>
+                                function switchDemoTab(tab) {
+                                    const viewArch = document.getElementById('view-arch');
+                                    const viewGit = document.getElementById('view-git');
+                                    const btnArch = document.getElementById('btn-arch');
+                                    const btnGit = document.getElementById('btn-git');
+
+                                    if (tab === 'arch') {
+                                        viewArch.style.display = 'flex';
+                                        viewGit.style.display = 'none';
+                                        // 激活态
+                                        btnArch.style.background = '#333';
+                                        btnArch.style.color = '#fff';
+                                        // 非激活态
+                                        btnGit.style.background = '#f0f0f0';
+                                        btnGit.style.color = '#666';
+                                    } else {
+                                        viewArch.style.display = 'none';
+                                        viewGit.style.display = 'flex';
+                                        // 激活态
+                                        btnGit.style.background = '#333';
+                                        btnGit.style.color = '#fff';
+                                        // 非激活态
+                                        btnArch.style.background = '#f0f0f0';
+                                        btnArch.style.color = '#666';
+                                    }
+                                }
+                            </script>
+                            <!-- 额外插入的组件 -->
+                            <!-- 额外插入的组件 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="slide layout-grid layout-grid-3" data-chapter-id="AI" data-chapter-title="AI 使用小技巧分享">
+            <div class="ppt-body">
+                <div class="page-header">
+                    <h1>小技巧分享</h1>
+                    <p>最近发现的一些小技巧</p>
+                </div>
+                
+                <div class="grid-container">
+                    
+                    <div class="card card-academic-blue">
+                        <div class="card-title">科研绘图相关</div>
+                        <div class="card-body">
+                            <p style="font-size: 20px;" font-weight: bold; margin-bottom: 5px;">Banana 绘图 Prompt：</p>                            
+                            <ul class="pretty-list" style="font-size: 20px;" line-height: 1.6;">
+                                <li>内容：你需要绘制的内容描述</li>
+                                <li>给 AI 的参考：采用 science、nature 等顶级期刊的样式进行绘制</li>
+                                <li>如何让文字渲染清晰：所有文字作为独立图层处理，文字需要清晰可读、印刷级锐利，文字使用中文</li>
+                            </ul>
+                        
+                            <p style="font-size: 20px;" font-weight: bold; margin-bottom: 5px;">绘图微调小技巧</p>                            
+                            <ul class="pretty-list" style="font-size: 20px;" line-height: 1.6;">
+                                <li>删除内容：删去红笔打叉号的地方</li>
+                                <li>修改指定文字：用红色框框起来并箭头指向某个文字的地方，用被指向的文字替换原来红框处的文字，更新后的内容应该不包含任何红框或者红色文字</li>
+                                <li>强调其他地方不变：其他地方保持一致</li>
+                                <li>需要继续强调文字需要保持清晰：如何让文字渲染清晰：所有文字作为独立图层处理，文字需要清晰可读、印刷级锐利，文字使用中文</li>
+                            </ul>
+                            <figure style="text-align:center;">
+                                <img src="2025-12-12-组会汇报/assets/pics/94ad02d10032a42dd5ef40badb95fe0a.png" class="zoomable-img"
+                                                    style="width: 20%; margin: 12px auto 0; display: block; border-radius: 6px; border: 1px solid #ddd; cursor: pointer; transition: transform 0.2s;" 
+                                                    onmouseover="this.style.transform='scale(1.02)'" 
+                                                    onmouseout="this.style.transform='scale(1)'">
+                                <figcaption style="margin-top:6px; font-size:18px; color:#555;">
+                                    图片微调效果展示（图片点击可以放大）
+                                </figcaption>
+                            </figure>
+                            
+                        </div>
+                    </div>
+
+                    <div class="card card-academic-green">
+                        <div class="card-title">借助 AI 制作演示文档</div>
+                        <div class="card-body">
+                            <p style="font-size: 20px;" font-weight: bold; margin-bottom: 5px;">方案一：使用 NotebookLM</p>                            
+                            <ul class="pretty-list" style="font-size: 20px;" line-height: 1.6;">
+                                <li>优势：只需投喂素材或指定调研方向，即可自动完成调查并直接产出 PPT</li>
+                                <li>劣势：输出格式固定为 PDF，无法进行自由编辑和调整</li>
+                            </ul>
+
+                            <p style="font-size: 20px;" font-weight: bold; margin-bottom: 5px;">方案二：Gemini Deep Research (HTML)</p>                            
+                            <ul class="pretty-list" style="font-size: 20px;" line-height: 1.6;">
+                                <li>优势：具备深度调研能力并能直接生成 HTML 报告，样式美观易读（例如上周刘自阳师兄就是用 html 汇报的，很美观）</li>
+                                <li>痛点：AI 每次生成的 HTML 样式不固定，难以直接作为标准化的演示文档使用</li>
+                            </ul>
+
+                            <p style="font-size: 20px;" font-weight: bold; margin-bottom: 5px;">进阶方案：自研 HTML 演示模板</p>                            
+                            <ul class="pretty-list" style="font-size: 20px;" line-height: 1.6;">
+                                <li>核心思路：使用我编写的专用 HTML 演示文档模板作为框架</li>
+                                <li>操作方法：将 AI 生成的任意 HTML 内容嵌入该模板中，从而构建格式统一、内容丰富的演示文档</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card card-academic-red">
+                        <div class="card-title">推荐几个可以关注的 AI 仓库</div>
+                        <div class="card-body">
+
+                            <a href="https://github.com/PicoTrex/Awesome-Nano-Banana-images" target="_blank" class="github-card">
+                                <div class="github-header">
+                                    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="github-icon">
+                                        <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path>
+                                    </svg>
+                                    <span class="github-repo-name">Awesome-Nano-Banana-images</span>
+                                </div>
+                                <div class="github-description">
+                                    里面收集了Nano-banana/Nano-banana-pro在各个任务场景下生成的令人惊艳的图片和提示词。
+                                </div>
+                                <div class="github-footer">
+                                    <span class="footer-item">
+                                        <span class="language-color" style="background-color: #8b9bb4;"></span>
+                                        Markdown
+                                    </span>
+                                    <span class="footer-item">Public</span>
+                                </div>
+                            </a>
+
+                            <a href="https://github.com/coderamp-labs/gitingest" target="_blank" class="github-card">
+                                <div class="github-header">
+                                    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="github-icon">
+                                        <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path>
+                                    </svg>
+                                    <span class="github-repo-name">gitingest</span>
+                                </div>
+                                <div class="github-description">
+                                    这个仓库可以将 github 代码仓库一键导出为一个 txt 文件，这个文件里面包含该仓库的文件目录、每个文件里面的代码，这种文件对 AI 阅读非常友好。
+                                </div>
+                                <div class="github-footer">
+                                    <span class="footer-item">
+                                        <span class="language-color" style="background-color: #3572A5;"></span>
+                                        Python
+                                    </span>
+                                    <span class="footer-item">Public</span>
+                                </div>
+                            </a>
+
+                            <a href="https://github.com/yamadashy/repomix" target="_blank" class="github-card">
+                                <div class="github-header">
+                                    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="github-icon">
+                                        <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path>
+                                    </svg>
+                                    <span class="github-repo-name">repomix</span>
+                                </div>
+                                <div class="github-description">
+                                    与上面的仓库类似，打包你本地的代码仓库为 AI 友好文件。
+                                </div>
+                                <div class="github-footer">
+                                    <span class="footer-item">
+                                        <span class="language-color" style="background-color: #3178c6;"></span>
+                                        TypeScript
+                                    </span>
+                                    <span class="footer-item">Public</span>
+                                </div>
+                            </a>
+
+                            <a href="https://github.com/icip-cas/PPTAgent" target="_blank" class="github-card">
+                                <div class="github-header">
+                                    <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="github-icon">
+                                        <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path>
+                                    </svg>
+                                    <span class="github-repo-name">PPTAgent</span>
+                                </div>
+                                <div class="github-description">
+                                    EMNLP 2025 的文章：PPTAgent：生成和评估超越文本到幻灯片的演示文稿。
+                                </div>
+                                <div class="github-footer">
+                                    <span class="footer-item">
+                                        <span class="language-color" style="background-color: #3572A5;"></span>
+                                        Python
+                                    </span>
+                                    <span class="footer-item">Public</span>
+                                </div>
+                            </a>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 结束页 -->
+        <!-- ========================================== -->
+        <div class="slide layout-cover" data-chapter-id="end" data-chapter-title="结束">
+            <div class="ppt-body" style="text-align:center; padding-top:120px;">
+                <h1 style="font-size: 120px; font-weight:700;">
+                    Thanks!
+                </h1>
+                <p style="font-size: 30px; color:#999; margin-top: 60px;">
+                    jinyuqiu@std.uestc.edu.cn
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 图片预览 Modal -->
+    <div id="imgModal" class="img-modal">
+        <span class="close" onclick="document.getElementById('imgModal').style.display='none'">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <!-- 加载必要的脚本 -->
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/startup.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
+    <script src="2025-12-12-组会汇报/assets/js/core.js"></script>
+    
+    <!-- 图片放大功能脚本 -->
+    <script>
+        // 为所有可缩放图片添加点击事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const zoomableImages = document.querySelectorAll('.zoomable-img');
+            const modal = document.getElementById('imgModal');
+            const modalImg = document.getElementById('modalImg');
+            
+            zoomableImages.forEach(function(img) {
+                img.addEventListener('click', function() {
+                    modal.style.display = 'block';
+                    modalImg.src = this.src;
+                });
+            });
+            
+            // 点击模态框背景关闭
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+            
+            // ESC键关闭
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modal.style.display === 'block') {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
