@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GaussianImage - 2D Gaussian Splatting 可视化</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap');
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #fbfcfd;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .active-tab {
+            border-bottom: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .image-viewport {
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border-radius: 1rem;
+            background: #fff;
+        }
+        code, pre {
+            font-family: 'Fira Code', monospace;
+        }
+        .custom-slider {
+            -webkit-appearance: none;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 5px;
+            outline: none;
+        }
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #3b82f6;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .custom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+        }
+    </style>
+</head>
+<body class="text-slate-800">
+
+    <!-- 导航栏 -->
+    <nav class="sticky top-0 z-50 glass-card border-b">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <span class="text-xl font-bold tracking-tight">GaussianImage</span>
+                </div>
+                <div class="hidden md:flex space-x-8 font-medium">
+                    <button onclick="switchTab('demo')" id="tab-btn-demo" class="nav-link py-5 active-tab transition-colors">实时演示</button>
+                    <button onclick="switchTab('docs')" id="tab-btn-docs" class="nav-link py-5 hover:text-blue-600 transition-colors">项目文档</button>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="https://github.com/Xinjie-Q/GaussianImage" target="_blank" class="text-slate-600 hover:text-black transition-colors">
+                        <i class="fab fa-github text-2xl"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主容器 -->
+    <div class="max-w-6xl mx-auto px-4 py-8">
+
+        <!-- 1. 演示页面 (Demo Tab) -->
+        <section id="demo-content" class="tab-content active">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-extrabold text-slate-900 mb-2">2D Gaussian Splatting 拟合演示</h2>
+                <p class="text-slate-500">通过紧凑的二维高斯表示，实现超高性能的图像重建与拟合</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- 真值容器 -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-semibold uppercase tracking-wider text-slate-400">Ground Truth</span>
+                        <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded font-bold">SOURCE</span>
+                    </div>
+                    <div class="image-viewport overflow-hidden group">
+                        <img id="gt-img" src="2dgs_img\kodim01.png" alt="GT" class="w-full h-auto transition-transform duration-500 group-hover:scale-105" onerror="handleImgError(this, 'GT')">
+                    </div>
+                </div>
+
+                <!-- 训练容器 -->
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-sm font-semibold uppercase tracking-wider text-slate-400">Reconstruction</span>
+                        <span id="iter-tag" class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded font-bold">ITER: 000100</span>
+                    </div>
+                    <div class="image-viewport overflow-hidden group">
+                        <img id="iter-img" src="results/my_experiment/kodim01/intermediate/kodim01_iter_000100.png" alt="Recon" class="w-full h-auto transition-opacity duration-200" onerror="handleImgError(this, 'RECON')">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 控制面板 -->
+            <div class="max-w-3xl mx-auto glass-card rounded-2xl p-6 shadow-xl border border-slate-200">
+                <div class="flex flex-col space-y-6">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">当前状态</p>
+                            <p id="status-text" class="text-lg font-mono font-bold text-blue-600">迭代: 100 / 47300</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">图像路径</p>
+                            <p id="path-text" class="text-xs font-mono text-slate-500">kodim01_iter_000100.png</p>
+                        </div>
+                    </div>
+
+                    <input type="range" id="iter-slider" min="1" max="473" value="1" step="1" class="custom-slider w-full">
+
+                    <div class="flex items-center justify-between gap-4">
+                        <button onclick="step(-1)" class="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all">
+                            <i class="fas fa-backward"></i>
+                        </button>
+                        
+                        <button id="play-btn" onclick="togglePlay()" class="flex-1 h-12 flex items-center justify-center space-x-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition-all shadow-lg shadow-blue-200">
+                            <i id="play-icon" class="fas fa-play"></i>
+                            <span id="play-text">自动播放演示</span>
+                        </button>
+
+                        <button onclick="step(1)" class="w-12 h-12 flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all">
+                            <i class="fas fa-forward"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 文档页面 (Docs Tab) -->
+        <section id="docs-content" class="tab-content max-w-4xl mx-auto">
+            <article class="prose prose-slate lg:prose-lg max-w-none">
+                <h1 class="text-4xl font-bold mb-6 border-b pb-4">GaussianImage 项目说明文档</h1>
+                
+                <h2 class="text-2xl font-bold mt-10 mb-4 flex items-center text-blue-700">
+                    <i class="fas fa-rocket mr-3"></i> 一、项目概述
+                </h2>
+                <p class="text-slate-600 leading-relaxed">
+                    GaussianImage 是一个基于二维高斯溅射（2D Gaussian Splatting）的图像表示与压缩算法实现。该项目提出了一种突破性的图像表示范式，使用紧凑的二维高斯表示和新颖的光栅化方法，实现了高性能的图像表示，同时具有短训练时间、最小化的 GPU 内存开销和超快的渲染速度（1500-2000 FPS）。此外，项目还集成了向量量化技术，构建了一个低复杂度的神经图像编解码器，解码速度达到约 2000 FPS，在低比特率下提供了优于传统编解码器（如 JPEG）的压缩性能。
+                </p>
+
+                <h2 class="text-2xl font-bold mt-10 mb-4 flex items-center text-blue-700">
+                    <i class="fas fa-file-code mr-3"></i> 二、Python 文件功能分类
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border rounded-xl overflow-hidden">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">类型</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">文件名</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold text-slate-500 uppercase tracking-wider">功能描述</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200">
+                            <tr>
+                                <td class="px-6 py-4 font-bold text-blue-600">核心模型</td>
+                                <td class="px-6 py-4 font-mono text-sm">gaussianimage_cholesky.py</td>
+                                <td class="px-6 py-4 text-sm">基于 Cholesky 分解的图像表示模型</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-bold text-blue-600 text-transparent">核心模型</td>
+                                <td class="px-6 py-4 font-mono text-sm">gaussianimage_rs.py</td>
+                                <td class="px-6 py-4 text-sm">基于旋转-缩放参数化的模型</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-bold text-blue-600 text-transparent">核心模型</td>
+                                <td class="px-6 py-4 font-mono text-sm">gaussiansplatting_3d.py</td>
+                                <td class="px-6 py-4 text-sm">三维高斯溅射应用于二维图像表示</td>
+                            </tr>
+                            <tr class="bg-slate-50">
+                                <td class="px-6 py-4 font-bold text-indigo-600 text-transparent">训练测试</td>
+                                <td class="px-6 py-4 font-mono text-sm">train.py</td>
+                                <td class="px-6 py-4 text-sm">主训练脚本，评估 PSNR, SSIM 等</td>
+                            </tr>
+                            <!-- 更多行... -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-10 mb-4 flex items-center text-blue-700">
+                    <i class="fas fa-terminal mr-3"></i> 三、快速开始指南
+                </h2>
+                <h4 class="font-bold text-slate-700 mt-6 mb-2 underline">3.1 环境配置</h4>
+                <pre class="bg-slate-900 text-slate-100 p-4 rounded-xl text-sm overflow-x-auto shadow-inner">
+# 克隆仓库
+git clone https://github.com/Xinjie-Q/GaussianImage.git --recursive
+cd GaussianImage
+
+# 安装依赖
+cd gsplat && pip install .[dev] && cd ../
+pip install -r requirements.txt</pre>
+
+                <h4 class="font-bold text-slate-700 mt-6 mb-2 underline">3.2 效果测试</h4>
+                <pre class="bg-slate-900 text-slate-100 p-4 rounded-xl text-sm overflow-x-auto">
+python train.py -d /path/to/dataset \
+    --data_name kodak \
+    --model_name GaussianImage_Cholesky \
+    --num_points 1000 \
+    --iterations 5000</pre>
+
+                <h2 class="text-2xl font-bold mt-10 mb-4 flex items-center text-blue-700">
+                    <i class="fas fa-microchip mr-3"></i> 四、算法分析
+                </h2>
+                <div class="bg-blue-900 rounded-xl p-1 shadow-2xl overflow-hidden">
+                    <div class="bg-blue-800 px-4 py-2 flex items-center justify-between">
+                        <span class="text-blue-200 text-xs font-bold uppercase tracking-widest">核心逻辑伪代码 (PyTorch Style)</span>
+                        <div class="flex space-x-1">
+                            <div class="w-2 h-2 rounded-full bg-red-400"></div>
+                            <div class="w-2 h-2 rounded-full bg-yellow-400"></div>
+                            <div class="w-2 h-2 rounded-full bg-green-400"></div>
+                        </div>
+                    </div>
+                    <pre class="bg-slate-900 text-blue-300 p-6 text-xs leading-relaxed overflow-x-auto">
+# 渲染核心过程
+def Forward_Rendering(μ, Σ, c, o):
+    # 2.1 投影二维高斯
+    for i in range(N):
+        if mode == "Cholesky":
+            Σ_2d = L * L.T
+        xy_screen = μ * (W/2, H/2)
+        conic = Σ_2d.inverse()
+        
+    # 2.2 光栅化 (累积求和)
+    for pixel in images:
+        for gaussian in sorted_by_depth:
+            weight = exp(-0.5 * Δ.T * conic * Δ)
+            I(pixel) += weight * opacity * color
+    return I</pre>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-10 mb-4 flex items-center text-blue-700 text-transparent">
+                    <i class="fas fa-lightbulb mr-3"></i> 五、研究建议
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 not-prose">
+                    <div class="p-4 bg-white border border-slate-200 rounded-xl">
+                        <h5 class="font-bold text-slate-800 mb-2 underline decoration-blue-500">架构改进</h5>
+                        <p class="text-sm text-slate-500">探索自适应增删高斯点的策略，根据图像复杂度动态调整容量。</p>
+                    </div>
+                    <div class="p-4 bg-white border border-slate-200 rounded-xl">
+                        <h5 class="font-bold text-slate-800 mb-2 underline decoration-indigo-500">压缩优化</h5>
+                        <p class="text-sm text-slate-500">尝试混合精度量化、自适应比特分配，优化率失真性能。</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="mt-20 py-12 bg-slate-50 border-t border-slate-200">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-slate-500">
+            <div class="mb-4 md:mb-0">
+                <p class="text-sm">© 2025 GaussianImage 研究项目. 基于 2D Gaussian Splatting.</p>
+            </div>
+            <div class="flex space-x-6 text-sm">
+                <a href="#" class="hover:text-blue-600">论文链接 (即将发布)</a>
+                <a href="https://github.com/Xinjie-Q/GaussianImage" class="hover:text-blue-600 underline font-bold">查看 GitHub 源码</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // 配置
+        const config = {
+            basePath: '2dgs_img/results/my_experiment/kodim01/intermediate/',
+            prefix: 'kodim01_iter_',
+            ext: '.png',
+            step: 100,
+            maxIter: 473
+        };
+
+        let isPlaying = false;
+        let playInterval = null;
+
+        // DOM 元素
+        const slider = document.getElementById('iter-slider');
+        const iterImg = document.getElementById('iter-img');
+        const iterTag = document.getElementById('iter-tag');
+        const statusText = document.getElementById('status-text');
+        const pathText = document.getElementById('path-text');
+        const playIcon = document.getElementById('play-icon');
+        const playText = document.getElementById('play-text');
+        const playBtn = document.getElementById('play-btn');
+
+        // 切换页面
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-tab'));
+            
+            document.getElementById(`${tab}-content`).classList.add('active');
+            document.getElementById(`tab-btn-${tab}`).classList.add('active-tab');
+            window.scrollTo(0,0);
+        }
+
+        // 格式化补零
+        function format(num) {
+            return String(num).padStart(6, '0');
+        }
+
+        // 更新显示
+        function updateDisplay() {
+            const index = parseInt(slider.value);
+            const iteration = index * config.step;
+            const padded = format(iteration);
+            const fileName = `${config.prefix}${padded}${config.ext}`;
+            const fullPath = `${config.basePath}${fileName}`;
+
+            // 更新文本
+            iterTag.textContent = `ITER: ${padded}`;
+            statusText.textContent = `迭代: ${iteration} / 47300`;
+            pathText.textContent = fileName;
+
+            // 预加载优化
+            const temp = new Image();
+            temp.src = fullPath;
+            temp.onload = () => {
+                iterImg.src = fullPath;
+            };
+        }
+
+        // 滑动条事件
+        slider.addEventListener('input', updateDisplay);
+
+        // 步进控制
+        function step(direction) {
+            slider.value = Math.min(config.maxIter, Math.max(1, parseInt(slider.value) + direction));
+            updateDisplay();
+        }
+
+        // 自动播放逻辑
+        function togglePlay() {
+            if (isPlaying) {
+                clearInterval(playInterval);
+                playIcon.className = "fas fa-play";
+                playText.textContent = "自动播放演示";
+                playBtn.classList.replace('bg-red-500', 'bg-blue-600');
+            } else {
+                playIcon.className = "fas fa-stop";
+                playText.textContent = "停止播放";
+                playBtn.classList.replace('bg-blue-600', 'bg-red-500');
+                
+                playInterval = setInterval(() => {
+                    let nextVal = parseInt(slider.value) + 1;
+                    if (nextVal > config.maxIter) nextVal = 1;
+                    slider.value = nextVal;
+                    updateDisplay();
+                }, 100);
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // 错误处理
+        function handleImgError(img, type) {
+            img.src = `https://via.placeholder.com/800x533/f1f5f9/94a3b8?text=${type}+Image+Not+Found`;
+        }
+
+        // 初始化
+        updateDisplay();
+    </script>
+</body>
+</html>
